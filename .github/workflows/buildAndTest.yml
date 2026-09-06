@@ -24,7 +24,7 @@ on:
 env:
   # The one variable that separates the arms: on baseline, action-checkout
   # skips its Set up Chalk step entirely.
-  CHALK_ON: ${{ github.event_name == 'workflow_dispatch' && inputs.leg != 'baseline' }}
+  CHALK_ON: ${{ inputs.leg == 'instrumented' }}
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
@@ -92,7 +92,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Comment test failures on PR
-        if: steps.run_checks.outputs.check_exit_code != '0' && github.event_name == 'pull_request'
+        if: steps.run_checks.outputs.check_exit_code != '0' && 'push' == 'pull_request'
         uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.ACTIONS_ACCESS_TOKEN }}
